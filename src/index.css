@@ -1,0 +1,74 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'MS Sans Serif', Arial, sans-serif;
+  --font-comic: 'Comic Sans MS', 'Comic Sans', cursive;
+  
+  --animate-popupAppear: popupAppear 0.4s ease-out forwards;
+  --animate-rainbowFlow: rainbow-flow 18s ease infinite;
+}
+
+@layer utilities {
+  .pixelated {
+    image-rendering: pixelated;
+  }
+  .inset-border {
+    border-style: inset;
+    border-color: #808080;
+  }
+  .text-shadow-md {
+    text-shadow: 2px 2px 4px #000000;
+  }
+  .text-shadow-sm {
+    text-shadow: 1px 1px 2px #000000;
+  }
+  .bg-rainbow {
+    background: linear-gradient(124deg, #ff2400, #e81d1d, #e8b71d, #e3e81d, #1de840, #1ddde8, #2b1de8, #dd00f3, #dd00f3);
+    background-size: 1800% 1800%;
+    animation: rainbow-flow 18s ease infinite;
+  }
+  
+  /* Fallback colored blocks for missing assets */
+  .fallback-bg-purple {
+    background-color: #9c27b0;
+    min-width: 50px;
+    min-height: 50px;
+  }
+  .fallback-bg-red {
+    background-color: #f44336;
+    min-width: 50px;
+    min-height: 100px;
+  }
+  .fallback-bg-white {
+    background-color: #ffffff;
+    min-width: 80px;
+    min-height: 80px;
+  }
+  .fallback-bg-blue {
+    background-color: #2196f3;
+    min-width: 80px;
+    min-height: 100px;
+  }
+  .fallback-bg-brown {
+    background-color: #795548;
+    min-width: 50px;
+    min-height: 100px;
+  }
+}
+
+@keyframes popupAppear {
+  from {
+    opacity: 0;
+    transform: scale(0.3) rotate(-20deg) translateX(100px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0deg) translateX(0);
+  }
+}
+
+@keyframes rainbow-flow {
+  0% { background-position: 0% 82% }
+  50% { background-position: 100% 19% }
+  100% { background-position: 0% 82% }
+}
