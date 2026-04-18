@@ -27,33 +27,6 @@
     background-size: 1800% 1800%;
     animation: rainbow-flow 18s ease infinite;
   }
-  
-  /* Fallback colored blocks for missing assets */
-  .fallback-bg-purple {
-    background-color: #9c27b0;
-    min-width: 50px;
-    min-height: 50px;
-  }
-  .fallback-bg-red {
-    background-color: #f44336;
-    min-width: 50px;
-    min-height: 100px;
-  }
-  .fallback-bg-white {
-    background-color: #ffffff;
-    min-width: 80px;
-    min-height: 80px;
-  }
-  .fallback-bg-blue {
-    background-color: #2196f3;
-    min-width: 80px;
-    min-height: 100px;
-  }
-  .fallback-bg-brown {
-    background-color: #795548;
-    min-width: 50px;
-    min-height: 100px;
-  }
 }
 
 @keyframes popupAppear {

@@ -108,7 +108,7 @@ export default function App() {
           <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-2">
             <p className="italic font-comic text-sm">Entrada 1: Al fin llegamos. Este lugar se siente extraño pero acogedor.</p>
             <div className="w-full bg-slate-200 border-2 border-slate-400 p-2 text-center text-xs text-slate-500 rounded">
-               [Aquí iría una imagen de Galería]
+               <img src="/assets/under-construction.gif" alt="Gallery" className="w-full h-40 object-cover bg-slate-100" />
             </div>
             <p className="italic font-comic text-sm">Entrada 2: Juraría que vi al oso de peluche moverse hacia los arbustos de la derecha.</p>
           </div>
@@ -187,7 +187,7 @@ export default function App() {
           <img 
             src="/assets/music.png" 
             alt="Music Player" 
-            className="cursor-pointer hover:scale-110 transition-transform pixelated w-[120px] h-auto fallback-bg-blue" 
+            className="cursor-pointer hover:scale-110 transition-transform pixelated w-[120px] h-auto" 
             onClick={() => handleObjectClick('Music')}
             onError={(e) => (e.currentTarget.style.display = 'none')}
           />
@@ -207,9 +207,9 @@ export default function App() {
           onClick={() => handleObjectClick('Gnome')}
         >
           {isMainCharacterUnlocked ? (
-            <img src="/assets/Character main.png" alt="Main Character" className="w-[100px] h-auto fallback-bg-purple mix-blend-normal" onError={(e) => (e.currentTarget.style.display = 'none')} />
+            <img src="/assets/Character main.png" alt="Main Character" className="w-[100px] h-auto" onError={(e) => (e.currentTarget.style.display = 'none')} />
           ) : (
-            <img src="/assets/Gnome.png" alt="Gnome" className="w-[120px] h-auto fallback-bg-red" onError={(e) => (e.currentTarget.style.display = 'none')} />
+            <img src="/assets/Gnome.png" alt="Gnome" className="w-[120px] h-auto" onError={(e) => (e.currentTarget.style.display = 'none')} />
           )}
         </div>
 
@@ -218,7 +218,7 @@ export default function App() {
            <img 
              src="/assets/Kitty.png" 
              alt="Kitty" 
-             className="absolute cursor-pointer hover:scale-110 transition-transform pixelated w-[100px] h-auto fallback-bg-white" 
+             className="absolute cursor-pointer hover:scale-110 transition-transform pixelated w-[100px] h-auto" 
              style={{ left: 1530, top: 520 }} 
              onClick={() => handleObjectClick('Kitty')}
              onError={(e) => (e.currentTarget.style.display = 'none')}
@@ -227,9 +227,9 @@ export default function App() {
 
         {/* Pergamino con Llave (Flotando a la derecha) */}
         <img 
-          src="/assets/scroll.png" 
-           alt="Scroll" 
-           className="absolute cursor-pointer hover:scale-110 transition-transform pixelated w-[150px] animate-pulse fallback-bg-brown" 
+          src="/assets/contract.png" 
+           alt="Scroll/Contract" 
+           className="absolute cursor-pointer hover:scale-110 transition-transform pixelated w-[150px] animate-pulse" 
            style={{ left: 1720, top: 520 }} 
            onClick={() => handleObjectClick('Scroll')}
            onError={(e) => (e.currentTarget.style.display = 'none')}
@@ -239,7 +239,7 @@ export default function App() {
         <img 
           src="/assets/signpost.png" 
           alt="Signpost" 
-          className="absolute cursor-pointer hover:scale-110 hover:-rotate-3 transition-transform pixelated w-[140px] h-auto fallback-bg-brown" 
+          className="absolute cursor-pointer hover:scale-110 hover:-rotate-3 transition-transform pixelated w-[140px] h-auto" 
           style={{ left: 880, top: 760 }} 
           onClick={() => handleObjectClick('Signpost')}
           onError={(e) => (e.currentTarget.style.display = 'none')}
