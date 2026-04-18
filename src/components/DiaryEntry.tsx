@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import glitchTextImg from '../assets/glitchtext.jpg';
 
 export default function DiaryEntry() {
   const [lang, setLang] = useState<'es' | 'en'>('es');
@@ -62,7 +61,7 @@ export default function DiaryEntry() {
       )}
 
       <div className="mt-8 mb-4 border-4 border-[#8c735d] p-1 bg-black">
-         <img src={glitchTextImg} alt="Glitch text" className="w-full h-auto" />
+         <img src="/assets/glitchtext.jpg" alt="Glitch text" className="w-full h-auto" />
       </div>
     </div>
   );
