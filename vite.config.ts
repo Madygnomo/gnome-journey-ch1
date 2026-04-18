@@ -6,9 +6,6 @@ import {defineConfig, loadEnv} from 'vite';
 export default defineConfig(({mode}) => {
   const env = loadEnv(mode, '.', '');
   return {
-    // CAMBIA ESTO A '/'
-    base: '/', 
-
     plugins: [react(), tailwindcss()],
     define: {
       'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
@@ -17,9 +14,6 @@ export default defineConfig(({mode}) => {
       alias: {
         '@': path.resolve(__dirname, '.'),
       },
-    },
-    build: {
-      assetsDir: 'vite-assets',
     },
     server: {
       // HMR is disabled in AI Studio via DISABLE_HMR env var.

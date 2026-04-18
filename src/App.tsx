@@ -556,7 +556,7 @@ export default function App() {
         </div>
       )}
 
-      {/* --- DEV TOOLS (Solo para ti) --- 
+      {/* --- DEV TOOLS (Solo para ti) --- */}
       <div className="fixed bottom-4 right-4 z-[5000] bg-black/80 text-white p-4 rounded-xl border border-gray-600 flex flex-col gap-2 shadow-lg">
         <h3 className="font-bold text-sm text-blue-300">🛠️ Mapeador de Cajas</h3>
         <label className="flex items-center gap-2 cursor-pointer font-sans text-xs">
@@ -577,7 +577,6 @@ export default function App() {
           </button>
         )}
       </div>
-      */}
 
     </div>
   );
