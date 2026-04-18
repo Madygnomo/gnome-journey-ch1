@@ -1,0 +1,22 @@
+{
+  "entities": {
+    "Comment": {
+      "title": "Comment",
+      "description": "A guestbook comment",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Name of the author" },
+        "text": { "type": "string", "description": "Comment content" },
+        "isSecretMode": { "type": "boolean", "description": "Public or secret path comment" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Timestamp" }
+      },
+      "required": ["name", "text", "isSecretMode", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/comments/{commentId}": {
+      "schema": { "$ref": "Comment" },
+      "description": "Guestbook comments for public and secret path"
+    }
+  }
+}
