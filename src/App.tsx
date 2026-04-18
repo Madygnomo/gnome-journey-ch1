@@ -1,5 +1,16 @@
 import { useState, useRef, useEffect } from 'react';
 
+import bgImage from './assets/BG.png';
+import musicIcon from './assets/music.png';
+import musicGif from './assets/music.gif';
+import charMain from './assets/Character main.png';
+import charGnome from './assets/Gnome.png';
+import charKitty from './assets/Kitty.png';
+import contractImg from './assets/contract.png';
+import signpostImg from './assets/signpost.png';
+import defaultThemeSong from './assets/bunnybunnybunny.mp3';
+import secretThemeSong from './assets/Secret.mp3';
+
 import DiaryEntry from './components/DiaryEntry';
 import DraggableCollider from './components/DraggableCollider';
 import CollectionsViewer from './components/CollectionsViewer';
@@ -58,15 +69,16 @@ export default function App() {
 
   useEffect(() => {
     if (!audioRef.current) {
-      audioRef.current = new Audio('/assets/bunnybunnybunny.mp3');
+      audioRef.current = new Audio(defaultThemeSong);
       audioRef.current.loop = true;
     }
     
     // Cambiar la canción dependiendo de si el modo secreto está activado
-    const desiredTrack = isMainCharacterUnlocked ? '/assets/Secret.mp3' : '/assets/bunnybunnybunny.mp3';
+    const desiredTrack = isMainCharacterUnlocked ? secretThemeSong : defaultThemeSong;
     
     // Si la fuente actual no termina en el track deseado, lo cambiamos
-    if (!audioRef.current.src.endsWith(desiredTrack)) {
+    // Extraemos la parte final comparando archivos (debido a hashes y rutas exactas)
+    if (!audioRef.current.src.includes(desiredTrack)) {
       audioRef.current.src = desiredTrack;
       // Reiniciar desde cero y cargar
       audioRef.current.currentTime = 0;
@@ -354,7 +366,7 @@ export default function App() {
       */}
       <div 
          className="relative w-[1920px] h-[1080px] shrink-0 origin-center transform scale-[0.35] sm:scale-[0.5] md:scale-[0.7] lg:scale-[0.8] xl:scale-100 select-none" 
-         style={{ backgroundImage: 'url(/assets/BG.png)', backgroundSize: 'cover' }}
+         style={{ backgroundImage: `url(${bgImage})`, backgroundSize: 'cover' }}
       >
         
         {/* === ELEMENTOS INTERACTIVOS BASADOS EN IMAGE.PNG === */}
@@ -362,7 +374,7 @@ export default function App() {
         {/* Music Player (Izquierda de la casa, sobre la mesa cian) */}
         <div className="absolute" style={{ left: 810, top: 320 }}>
           <img 
-            src="/assets/music.png" 
+            src={musicIcon} 
             alt="Music Player" 
             className="cursor-pointer hover:scale-110 transition-transform pixelated w-[120px] h-auto" 
             onClick={() => handleObjectClick('Music')}
@@ -370,7 +382,7 @@ export default function App() {
           />
           {isMusicPlaying && (
             <img 
-               src="/assets/music.gif" 
+               src={musicGif} 
                alt="playing" 
                className="absolute left-[-20px] -top-[60px] w-[140px] pointer-events-none z-10" 
             />
@@ -384,16 +396,16 @@ export default function App() {
           onClick={() => handleObjectClick('Gnome')}
         >
           {isMainCharacterUnlocked ? (
-            <img src="/assets/Character main.png" alt="Main Character" className="w-[100px] h-auto" onError={(e) => (e.currentTarget.style.display = 'none')} />
+            <img src={charMain} alt="Main Character" className="w-[100px] h-auto" onError={(e) => (e.currentTarget.style.display = 'none')} />
           ) : (
-            <img src="/assets/Gnome.png" alt="Gnome" className="w-[120px] h-auto" onError={(e) => (e.currentTarget.style.display = 'none')} />
+            <img src={charGnome} alt="Gnome" className="w-[120px] h-auto" onError={(e) => (e.currentTarget.style.display = 'none')} />
           )}
         </div>
 
         {/* Kitty (Lado derecho de la casa) */}
         <div className="absolute" style={{ left: 1530, top: 520 }}>
            <img 
-             src="/assets/Kitty.png" 
+             src={charKitty} 
              alt="Kitty" 
              className="cursor-pointer hover:scale-110 transition-transform pixelated w-[100px] h-auto relative z-10" 
              onClick={() => handleObjectClick('Kitty')}
@@ -430,7 +442,7 @@ export default function App() {
         {/* Pergamino con Llave (Oculto hasta desbloquear el chat del gato) */}
         {isMainCharacterUnlocked && (
           <img 
-            src="/assets/contract.png" 
+            src={contractImg} 
              alt="Scroll/Contract" 
              className="absolute cursor-pointer hover:scale-110 transition-transform pixelated w-[150px] animate-pulse" 
              style={{ left: 1220, top: 720 }} 
@@ -441,7 +453,7 @@ export default function App() {
 
         {/* Signpost (Agrupado en la base central) */}
         <img 
-          src="/assets/signpost.png" 
+          src={signpostImg} 
           alt="Signpost" 
           className="absolute cursor-pointer hover:scale-110 hover:-rotate-3 transition-transform pixelated w-[140px] h-auto" 
           style={{ left: 880, top: 760 }} 
