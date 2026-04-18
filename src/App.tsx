@@ -556,28 +556,6 @@ export default function App() {
         </div>
       )}
 
-      {/* --- DEV TOOLS (Solo para ti) --- */}
-      <div className="fixed bottom-4 right-4 z-[5000] bg-black/80 text-white p-4 rounded-xl border border-gray-600 flex flex-col gap-2 shadow-lg">
-        <h3 className="font-bold text-sm text-blue-300">🛠️ Mapeador de Cajas</h3>
-        <label className="flex items-center gap-2 cursor-pointer font-sans text-xs">
-          <input 
-            type="checkbox" 
-            checked={isEditMode} 
-            onChange={(e) => setIsEditMode(e.target.checked)} 
-            className="w-4 h-4 cursor-pointer" 
-          />
-          Activar Modo Edición
-        </label>
-        {isEditMode && (
-          <button 
-            onClick={copyColliderData} 
-            className="bg-blue-600 hover:bg-blue-500 px-3 py-2 rounded text-xs font-bold transition-colors mt-2"
-          >
-            📋 Copiar Código Generado
-          </button>
-        )}
-      </div>
-
     </div>
   );
 }
