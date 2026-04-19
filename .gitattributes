@@ -1,9 +1,15 @@
-# Tratar archivos multimedia como binarios para evitar corrupción durante la sincronización
-*.png binary
-*.jpg binary
-*.jpeg binary
-*.gif binary
-*.mp3 binary
-*.ico binary
-*.webp binary
-*.mp4 binary
+# Forzar a Git a detectar texto automáticamente por defecto
+* text=auto
+
+# Bloquear explícitamente cualquier conversión de texto en archivos multimedia
+*.png binary -text -diff
+*.jpg binary -text -diff
+*.jpeg binary -text -diff
+*.gif binary -text -diff
+*.mp3 binary -text -diff
+*.mp4 binary -text -diff
+*.ico binary -text -diff
+*.webp binary -text -diff
+
+# Asegurar que los archivos de assets no se toquen nunca
+public/assets/**/* binary -text -diff
