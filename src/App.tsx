@@ -5,6 +5,20 @@ import DraggableCollider from './components/DraggableCollider';
 import CollectionsViewer from './components/CollectionsViewer';
 import Guestbook from './components/Guestbook';
 import Box6Video from './components/Box6Video';
+import KawaiiDialog from './components/KawaiiDialog';
+import BannerSlider from './components/BannerSlider';
+import CustomCursor from './components/CustomCursor';
+import SecretGifs from './components/SecretGifs';
+import SecretQuestionsEditor from './components/SecretQuestionsEditor';
+import ContractModal from './components/ContractModal';
+
+const initialSecretQuestions = [
+  "¿Qué es lo que más te hace sonreír hoy?",
+  "¿Si pudieras viajar a cualquier lugar en un segundo, a dónde irías?",
+  "¿Cuál es tu canción favorita del momento?",
+  "¿Qué secreto le dirías a un gato que sepa guardar secretos?",
+  "¿Cómo te describirías en tres palabras mágicas?",
+];
 
 const initialBoxColliders = [
   { id: 1, left: 677, top: 476, width: 88, height: 103 },
@@ -13,6 +27,15 @@ const initialBoxColliders = [
   { id: 4, left: 487, top: 821, width: 83, height: 71 },
   { id: 5, left: 614, top: 876, width: 51, height: 73 },
   { id: 6, left: 519, top: 900, width: 89, height: 76 }
+];
+
+const initialMovableGifs = [
+  { id: 1776558989782, url: "https://i.pinimg.com/originals/ed/2e/d4/ed2ed49e5afd7c8e12d13ca8b93edbb9.gif", left: 726, top: 723, scale: 0.8 },
+  { id: 1776559031328, url: "https://i.pinimg.com/originals/11/7c/f9/117cf97cb8cda572ee8b94d89fad868b.gif", left: 132, top: 532, scale: 0.35 },
+  { id: 1776559055145, url: "https://grossion5z.neocities.org/graphics/chippieangel.gif", left: 1401, top: 582, scale: 1 },
+  { id: 1776559077826, url: "https://i.pinimg.com/originals/1e/ad/25/1ead25b99abfe0f4f7ff0f099ab92a82.gif", left: 251, top: 712, scale: 0.5 },
+  { id: 1776559133703, url: "https://i.pinimg.com/originals/37/8e/45/378e452a0664fbe6b2409bb42a8e06bb.gif", left: 763, top: 419, scale: 0.35 },
+  { id: 1776559240532, url: "https://i.pinimg.com/originals/75/5f/5a/755f5a9265d007795e30b1e8e0ca3ad1.gif", left: 247, top: 224, scale: 0.35 }
 ];
 
 const prompt2Keywords = [
@@ -34,6 +57,10 @@ export default function App() {
   
   const [isMainCharacterUnlocked, setIsMainCharacterUnlocked] = useState(false);
   const [showGreetingsPopup, setShowGreetingsPopup] = useState(false);
+  const [secretQuestions, setSecretQuestions] = useState(initialSecretQuestions);
+  const [activeQuestion, setActiveQuestion] = useState<string | null>(null);
+  const [isContractOpen, setIsContractOpen] = useState(false);
+  const [isAdminVisible, setIsAdminVisible] = useState(false);
   
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -45,8 +72,41 @@ export default function App() {
   const [isEditMode, setIsEditMode] = useState(false);
   const [boxColliders, setBoxColliders] = useState(initialBoxColliders);
 
+  // --- NUEVA SECCIÓN PARA GIFS MOVIBLES ---
+  const [movableGifs, setMovableGifs] = useState<{id: number, url: string, left: number, top: number, scale: number}[]>(initialMovableGifs);
+  const [gifInputUrl, setGifInputUrl] = useState("");
+
   const handleBoxColliderChange = (id: number, data: {left: number, top: number, width: number, height: number}) => {
     setBoxColliders(prev => prev.map(b => b.id === id ? { ...b, ...data } : b));
+  };
+
+  const handleGifChange = (id: number, data: {left: number, top: number}) => {
+    setMovableGifs(prev => prev.map(g => g.id === id ? { ...g, ...data } : g));
+  };
+
+  const addGif = () => {
+    if (gifInputUrl.trim()) {
+      setMovableGifs(prev => [...prev, { 
+        id: Date.now(), 
+        url: gifInputUrl.trim(), 
+        left: 500, 
+        top: 500, 
+        scale: 1 
+      }]);
+      setGifInputUrl("");
+    } else {
+      alert("Por favor, pega una URL válida primero.");
+    }
+  };
+
+  const deleteGif = (id: number) => {
+    setMovableGifs(prev => prev.filter(g => g.id !== id));
+  };
+
+  const copyGifData = () => {
+    const dataStr = JSON.stringify(movableGifs, null, 2);
+    navigator.clipboard.writeText(dataStr);
+    alert("Datos de GIFs copiados al portapapeles.");
   };
 
   const copyColliderData = () => {
@@ -55,6 +115,24 @@ export default function App() {
     navigator.clipboard.writeText(finalCode);
     alert("¡Código de cajas copiado!\nVe al inicio del archivo App.tsx y pega esto para reemplazar initialBoxColliders.");
   };
+
+  const copyQuestionsCode = () => {
+    const dataStr = secretQuestions.map(q => `  "${q.replace(/"/g, '\\"')}"`).join(',\n');
+    const finalCode = `const initialSecretQuestions = [\n${dataStr}\n];`;
+    navigator.clipboard.writeText(finalCode);
+    alert("¡Lista de preguntas copiada!\nReemplaza initialSecretQuestions en App.tsx con el código copiado.");
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ctrl + Shift + U to toggle Admin Tool
+      if (e.ctrlKey && e.shiftKey && e.key === 'U') {
+        setIsAdminVisible(prev => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   useEffect(() => {
     if (!audioRef.current) {
@@ -311,23 +389,13 @@ export default function App() {
     Bear: {
       locked: {
         title: "Osito de Peluche",
-        content: <p>Un tierno oso de peluche con un gorrito de fiesta. Alguien lo debió olvidar durante la mudanza.</p>
+        content: <p>Soy tierno</p>
       },
       unlocked: {
         title: "Guardián de la Puerta",
-        content: <p className="text-red-600 font-bold">"Tuviste que haber traído la miel...", susurra el oso parpadeando lentamente.</p>
+        content: <p className="text-red-600 font-bold">"Tienes cuero??? el gato ese me los gasto todos"</p>
       }
     },
-    Tomato: {
-      locked: {
-        title: "Tomate Extraño",
-        content: <p>Parece un vegetal podrido... Espera, ¿tiene cara? Qué espeluznante.</p>
-      },
-      unlocked: {
-        title: "Señor Tomate",
-        content: <p className="font-comic text-green-700">"¡Felicidades por encontrarme jefe! Toma este código para la caja fuerte: 0451"</p>
-      }
-    }
   };
 
   const handleObjectClick = (objectName: string) => {
@@ -336,6 +404,8 @@ export default function App() {
       if(kittyStep === 1) setChatText("¿Cómo saludas?");
     } else if (objectName === 'Music') {
       setIsMusicPlaying(!isMusicPlaying);
+    } else if (objectName === 'Scroll') {
+      setIsContractOpen(true);
     } else {
       // Sistema de Rutas Narrativas
       const routeData = routeContents[objectName];
@@ -370,12 +440,22 @@ export default function App() {
           />
           {isMusicPlaying && (
             <img 
-               src="/assets/music.gif" 
-               alt="playing" 
-               className="absolute left-[-20px] -top-[60px] w-[140px] pointer-events-none z-10" 
+              src="/assets/music.gif" 
+              alt="playing" 
+              className="absolute left-[-20px] -top-[60px] w-[140px] pointer-events-none z-10" 
             />
           )}
         </div>
+
+        {/* GIFs Dinámicos en Modo Secreto */}
+        {isMainCharacterUnlocked && (
+          <SecretGifs 
+            gifs={movableGifs} 
+            isEditMode={isEditMode} 
+            onGifChange={handleGifChange} 
+            onDeleteGif={deleteGif} 
+          />
+        )}
 
         {/* Gnome / Main Character (Abajo del pozo / Frente a las escaleras) */}
         <div 
@@ -386,7 +466,7 @@ export default function App() {
           {isMainCharacterUnlocked ? (
             <img src="/assets/Character main.png" alt="Main Character" className="w-[100px] h-auto" onError={(e) => (e.currentTarget.style.display = 'none')} />
           ) : (
-            <img src="/assets/Gnome.png" alt="Gnome" className="w-[120px] h-auto" onError={(e) => (e.currentTarget.style.display = 'none')} />
+            <img src="/assets/Gnome.png" alt="Gnome" className="w-[50px] h-auto" onError={(e) => (e.currentTarget.style.display = 'none')} />
           )}
         </div>
 
@@ -417,9 +497,19 @@ export default function App() {
                <ul className="columns-2 gap-x-2 space-y-1 text-left list-none m-0 p-0 font-serif text-[14px] leading-tight">
                  {greetingsList.map((greeting, index) => (
                    <li key={index} className="break-inside-avoid">
-                     <span className="bg-[#e4fcce] text-[#6b31c4] px-1 rounded-[1px] inline-block max-w-[130px] overflow-hidden text-ellipsis whitespace-nowrap" title={greeting}>
-                       {greeting}
-                     </span>
+                     {isMainCharacterUnlocked ? (
+                       <button 
+                         onClick={() => setActiveQuestion(secretQuestions[index % secretQuestions.length])}
+                         className="bg-[#e4fcce] text-[#6b31c4] px-1 rounded-[1px] inline-block max-w-[130px] overflow-hidden text-ellipsis whitespace-nowrap hover:bg-[#ffb6c1] hover:text-white transition-colors text-left w-full" 
+                         title="Haz clic para responder"
+                       >
+                         {greeting}
+                       </button>
+                     ) : (
+                       <span className="bg-[#e4fcce] text-[#6b31c4] px-1 rounded-[1px] inline-block max-w-[130px] overflow-hidden text-ellipsis whitespace-nowrap" title={greeting}>
+                         {greeting}
+                       </span>
+                     )}
                    </li>
                  ))}
                </ul>
@@ -440,20 +530,22 @@ export default function App() {
         )}
 
         {/* Signpost (Agrupado en la base central) */}
-        <img 
-          src="/assets/signpost.png" 
-          alt="Signpost" 
-          className="absolute cursor-pointer hover:scale-110 hover:-rotate-3 transition-transform pixelated w-[140px] h-auto" 
-          style={{ left: 880, top: 760 }} 
-          onClick={() => handleObjectClick('Signpost')}
-          onError={(e) => (e.currentTarget.style.display = 'none')}
-        />
+        {!isMainCharacterUnlocked && (
+          <img 
+            src="/assets/signpost.png" 
+            alt="Signpost" 
+            className="absolute cursor-pointer hover:scale-110 hover:-rotate-3 transition-transform pixelated w-[140px] h-auto" 
+            style={{ left: 880, top: 760 }} 
+            onClick={() => handleObjectClick('Signpost')}
+            onError={(e) => (e.currentTarget.style.display = 'none')}
+          />
+        )}
 
 
         {/* === ZONAS INVISIBLES CLICKEABLES (Mapeando el BG) === */}
 
         {/* --- CAJAS DE MUDANZA (Draggables en Edit Mode) --- */}
-        {boxColliders.map(box => (
+        {!isMainCharacterUnlocked && boxColliders.map(box => (
           <DraggableCollider 
             key={box.id}
             id={box.id}
@@ -471,18 +563,11 @@ export default function App() {
         {/* Osito de Peluche (Abajo a la derecha) */}
         <div 
           className="absolute cursor-pointer hover:bg-white/20 transition-colors z-10 rounded-full"
-          style={{ left: 1400, top: 820, width: 100, height: 120 }}
+          style={{ left: 1355, top: 870, width: 100, height: 120 }}
           onClick={() => handleObjectClick('Bear')}
           title="Osito"
         />
 
-        {/* Tomate de la esquina inferior derecha */}
-        <div 
-          className="absolute cursor-pointer hover:bg-white/20 transition-colors z-10 rounded-full"
-          style={{ left: 1800, top: 920, width: 100, height: 120 }}
-          onClick={() => handleObjectClick('Tomato')}
-          title="???"
-        />
 
       </div>
 
@@ -556,6 +641,72 @@ export default function App() {
         </div>
       )}
 
+      {/* Kawaii Question Dialog */}
+      {activeQuestion && (
+        <KawaiiDialog 
+          question={activeQuestion} 
+          onClose={() => setActiveQuestion(null)} 
+        />
+      )}
+
+      {/* Admin Tool */}
+      {isAdminVisible && (
+        <div className="fixed bottom-4 right-4 z-[5000] bg-black/80 text-white p-4 rounded-xl border border-gray-600 flex flex-col gap-2 shadow-lg max-w-[200px]">
+          <h3 className="font-bold text-sm text-blue-300">🛠️ Admin Tool</h3>
+          <label className="flex items-center gap-2 cursor-pointer font-sans text-xs">
+            <input 
+              type="checkbox" 
+              checked={isEditMode} 
+              onChange={(e) => setIsEditMode(e.target.checked)} 
+              className="w-4 h-4 cursor-pointer" 
+            />
+            Modo Edición
+          </label>
+          
+          {isEditMode && (
+            <div className="flex flex-col gap-2 mt-2">
+              <input 
+                type="text" 
+                placeholder="Pega URL del GIF..."
+                value={gifInputUrl}
+                onChange={(e) => setGifInputUrl(e.target.value)}
+                className="text-black text-[10px] px-2 py-1 rounded border-2 border-gray-400 outline-none"
+              />
+              <button 
+                onClick={addGif} 
+                className="bg-green-700 hover:bg-green-600 px-3 py-1 rounded text-[10px] font-bold transition-colors"
+              >
+                ➕ Añadir GIF
+              </button>
+              <button 
+                onClick={copyColliderData} 
+                className="bg-blue-600 hover:bg-blue-500 px-3 py-1 rounded text-[10px] font-bold transition-colors"
+              >
+                📋 Copiar Cajas
+              </button>
+              <button 
+                onClick={copyGifData} 
+                className="bg-purple-600 hover:bg-purple-500 px-3 py-1 rounded text-[10px] font-bold transition-colors"
+              >
+                📋 Copiar GIFs
+              </button>
+
+              <SecretQuestionsEditor 
+                questions={secretQuestions} 
+                setQuestions={setSecretQuestions} 
+                onCopyCode={copyQuestionsCode}
+              />
+            </div>
+          )}
+        </div>
+      )}
+
+      {isContractOpen && (
+        <ContractModal onClose={() => setIsContractOpen(false)} />
+      )}
+
+      {isMainCharacterUnlocked && <BannerSlider />}
+      <CustomCursor />
     </div>
   );
 }

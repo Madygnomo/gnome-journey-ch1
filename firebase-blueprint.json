@@ -1,22 +1,51 @@
 {
   "entities": {
-    "Comment": {
-      "title": "Comment",
-      "description": "A guestbook comment",
+    "questionnaire_response": {
+      "title": "Questionnaire Response",
+      "description": "User responses to secret mode questions",
       "type": "object",
       "properties": {
-        "name": { "type": "string", "description": "Name of the author" },
+        "question": { "type": "string", "description": "The question being answered" },
+        "answer": { "type": "string", "description": "The user's response" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "When the response was recorded" }
+      },
+      "required": ["question", "answer", "createdAt"]
+    },
+    "comment": {
+      "title": "Guestbook Comment",
+      "description": "User comments in public or secret mode",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Author name" },
         "text": { "type": "string", "description": "Comment content" },
-        "isSecretMode": { "type": "boolean", "description": "Public or secret path comment" },
-        "createdAt": { "type": "string", "format": "date-time", "description": "Timestamp" }
+        "isSecretMode": { "type": "boolean", "description": "Whether it belongs to secret mode" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "When created" }
       },
       "required": ["name", "text", "isSecretMode", "createdAt"]
+    },
+    "contract_acceptance": {
+      "title": "Contract Acceptance",
+      "description": "User acceptance of the Gnomito contract",
+      "type": "object",
+      "properties": {
+        "accepted": { "type": "boolean" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["accepted", "timestamp"]
     }
   },
   "firestore": {
+    "/questionnaire_responses/{responseId}": {
+      "schema": "questionnaire_response",
+      "description": "Stores answers to the secret mode questions"
+    },
     "/comments/{commentId}": {
-      "schema": { "$ref": "Comment" },
-      "description": "Guestbook comments for public and secret path"
+      "schema": "comment",
+      "description": "Guestbook comments"
+    },
+    "/contract_acceptances/{acceptanceId}": {
+      "schema": "contract_acceptance",
+      "description": "Acceptances of the Gnomito contract"
     }
   }
 }

@@ -6,6 +6,7 @@
   
   --animate-popupAppear: popupAppear 0.4s ease-out forwards;
   --animate-rainbowFlow: rainbow-flow 18s ease infinite;
+  --animate-marquee: marquee 40s linear infinite;
 }
 
 @layer utilities {
@@ -44,4 +45,22 @@
   0% { background-position: 0% 82% }
   50% { background-position: 100% 19% }
   100% { background-position: 0% 82% }
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+html, body {
+  cursor: url('/cursor/cursor.png'), auto;
+}
+
+button, a, .cursor-pointer {
+  cursor: url('/cursor/pointer.png'), pointer !important;
+}
+
+.cursor-dot {
+  pointer-events: none;
+  user-select: none;
 }
