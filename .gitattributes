@@ -1,0 +1,9 @@
+# Tratar archivos multimedia como binarios para evitar corrupción durante la sincronización
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.mp3 binary
+*.ico binary
+*.webp binary
+*.mp4 binary
