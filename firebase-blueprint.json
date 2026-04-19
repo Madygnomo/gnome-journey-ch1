@@ -32,6 +32,16 @@
         "timestamp": { "type": "string", "format": "date-time" }
       },
       "required": ["accepted", "timestamp"]
+    },
+    "secret_question": {
+      "title": "Secret Question",
+      "description": "Customizable question for secret mode",
+      "type": "object",
+      "properties": {
+        "text": { "type": "string", "description": "The question text" },
+        "order": { "type": "number", "description": "Display order" }
+      },
+      "required": ["text", "order"]
     }
   },
   "firestore": {
@@ -46,6 +56,10 @@
     "/contract_acceptances/{acceptanceId}": {
       "schema": "contract_acceptance",
       "description": "Acceptances of the Gnomito contract"
+    },
+    "/secret_questions/{questionId}": {
+      "schema": "secret_question",
+      "description": "Stores custom questions managed by admin"
     }
   }
 }

@@ -22,5 +22,10 @@ service cloud.firestore {
       allow create: if request.resource.data.accepted == true;
       allow read: if true;
     }
+
+    match /secret_questions/{id} {
+      allow read: if true;
+      allow write: if true; // Habilitamos escritura para que el usuario pueda editar sin líos mientras lo configuramos
+    }
   }
 }

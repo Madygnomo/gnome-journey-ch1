@@ -11,6 +11,8 @@ import CustomCursor from './components/CustomCursor';
 import SecretGifs from './components/SecretGifs';
 import SecretQuestionsEditor from './components/SecretQuestionsEditor';
 import ContractModal from './components/ContractModal';
+import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
+import { db } from './firebase';
 
 const initialSecretQuestions = [
   "¿Qué es lo que más te hace sonreír hoy?",
@@ -57,7 +59,21 @@ export default function App() {
   
   const [isMainCharacterUnlocked, setIsMainCharacterUnlocked] = useState(false);
   const [showGreetingsPopup, setShowGreetingsPopup] = useState(false);
-  const [secretQuestions, setSecretQuestions] = useState(initialSecretQuestions);
+  const [secretQuestions, setSecretQuestions] = useState<string[]>(initialSecretQuestions);
+  
+  // Fetch questions from Firestore
+  useEffect(() => {
+    const q = query(collection(db, 'secret_questions'), orderBy('order', 'asc'));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      if (!snapshot.empty) {
+        setSecretQuestions(snapshot.docs.map(doc => doc.data().text));
+      } else {
+        setSecretQuestions(initialSecretQuestions);
+      }
+    });
+    return () => unsubscribe();
+  }, []);
+
   const [activeQuestion, setActiveQuestion] = useState<string | null>(null);
   const [isContractOpen, setIsContractOpen] = useState(false);
   const [isAdminVisible, setIsAdminVisible] = useState(false);
@@ -125,8 +141,12 @@ export default function App() {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Ctrl + Shift + U to toggle Admin Tool
-      if (e.ctrlKey && e.shiftKey && e.key === 'U') {
+      // Intentar varias combinaciones por si el navegador bloquea una
+      const isAdminKey = (e.ctrlKey && e.shiftKey && e.key.toUpperCase() === 'U') || 
+                         (e.altKey && e.shiftKey && e.key.toUpperCase() === 'A');
+      
+      if (isAdminKey) {
+        console.log("Admin Tool Toggle Triggered");
         setIsAdminVisible(prev => !prev);
       }
     };
@@ -692,8 +712,6 @@ export default function App() {
               </button>
 
               <SecretQuestionsEditor 
-                questions={secretQuestions} 
-                setQuestions={setSecretQuestions} 
                 onCopyCode={copyQuestionsCode}
               />
             </div>
@@ -707,6 +725,13 @@ export default function App() {
 
       {isMainCharacterUnlocked && <BannerSlider />}
       <CustomCursor />
+
+      {/* Secret hidden trigger for Admin Tool (fail-safe) */}
+      <div 
+        className="fixed bottom-0 right-0 w-10 h-10 z-[9999] opacity-0 cursor-default"
+        onDoubleClick={() => setIsAdminVisible(!isAdminVisible)}
+        title="Secret Admin Toggle"
+      />
     </div>
   );
 }
